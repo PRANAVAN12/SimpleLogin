@@ -10,7 +10,7 @@ const AppStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Login"
         screenOptions={{
           headerShown: false, // Hide the default header
         }}>
