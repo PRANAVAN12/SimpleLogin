@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TextInput,
@@ -7,15 +7,36 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import InstagramLoginButton from 'react-native-instagram-login';
 
 const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const ref = useRef<any>(null);
   const navigation = useNavigation();
 
+  const handleLoginButtonPress = () => {
+    if (ref.current) {
+      ref.current.show();
+    }
+  };
+
+  const handleLoginSuccess = (token: string) => {
+    setAccessToken(token);
+    console.log('Access Token:', token);
+  };
+
+  const handleLoginFailure = (error: any) => {
+    console.log('Login Error:', error);
+  };
+
   const handleLogin = () => {};
+
+  const handleInstagramLogin = () => {
+    handleLoginButtonPress();
+  };
 
   return (
     <View style={styles.container}>
@@ -28,7 +49,7 @@ const LoginScreen: React.FC = () => {
           value={username}
           placeholder="Username"
           placeholderTextColor="#003f5c"
-          onChangeText={text => setUsername(text)}
+          onChangeText={(text) => setUsername(text)}
         />
       </View>
       <View style={styles.inputView}>
@@ -37,7 +58,7 @@ const LoginScreen: React.FC = () => {
           placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
-          onChangeText={password => setPassword(password)}
+          onChangeText={(password) => setPassword(password)}
         />
       </View>
 
@@ -45,9 +66,23 @@ const LoginScreen: React.FC = () => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.instagramButton}>
+      <TouchableOpacity
+        style={styles.instagramButton}
+        onPress={handleInstagramLogin}
+      >
         <Text style={styles.buttonText}>Login With Instagram</Text>
       </TouchableOpacity>
+
+      <InstagramLoginButton
+        ref={ref}
+        appId="YOUR_INSTAGRAM_APP_ID"
+        appSecret="YOUR_INSTAGRAM_APP_SECRET"
+        redirectUrl="YOUR_INSTAGRAM_REDIRECT_URL"
+        scopes={['user_profile', 'user_media']}
+        buttonText="Login with Instagram"
+        onLoginSuccess={handleLoginSuccess}
+        onLoginFailure={handleLoginFailure}
+      />
     </View>
   );
 };
